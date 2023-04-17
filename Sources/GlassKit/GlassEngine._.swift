@@ -2,7 +2,7 @@
 //  GlassEngine._.swift
 //  Marble
 //
-//  Created by 0xKala on 8/8/20.
+//  Created by PEXAVC on 8/8/20.
 //  Copyright © 2020 Linen & Sole. All rights reserved.
 //
 
@@ -13,6 +13,8 @@ import Foundation
 public class GlassEngine {
     public let player: GlassPlayerEngine = .init()
     public let mic: GlassMicEngine = .init()
+    public let midi: GlassMIDIEngine = .init()
+    
     internal var leVerre: LeVerre = .init()
     
     public struct Info {

@@ -2,8 +2,8 @@
 //  AudioRecorder.swift
 //  Wonder
 //
-//  Created by 0xKala on 9/19/19.
-//  Copyright © 2019 0xKala. All rights reserved.
+//  Created by PEXAVC on 9/19/19.
+//  Copyright © 2019 PEXAVC. All rights reserved.
 //
 
 //#if os(iOS) || os(tvOS)
