@@ -10,7 +10,7 @@ import AudioToolbox
 import Foundation
 
 final class MidiSequence {
-    private let musicSequence: MusicSequence
+    let musicSequence: MusicSequence
     
     var fileFormat: FileFormat = .type1
     

@@ -122,6 +122,10 @@ public extension MidiData {
         return track
     }
     
+    func getSequence() -> MusicSequence {
+        return self.sequence.musicSequence
+    }
+    
     func removeTrack(at index: Int) {
         sequence.dispose(track: noteTracks[index])
         noteTracks.remove(at: index)

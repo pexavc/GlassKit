@@ -256,7 +256,7 @@ extension MidiNoteTrack {
                 if let channelMessage: MIDIChannelMessage = bindEventData(info: eventInfo),
                     let status = channelMessage.status.hexString.first,
                     let channel = channelMessage.status.hexString.suffix(1).number,
-                    let gmPatch = GMPatch(rawValue: channelMessage.data1) {
+                    let gmPatch = GMPatch(rawValue: 0) {
                     switch status {
                     case "C":
                         patch = MidiPatch(channel: channel, patch: gmPatch)
