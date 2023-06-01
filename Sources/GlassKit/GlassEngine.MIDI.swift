@@ -27,9 +27,6 @@ open class GlassMIDIEngine: NSObject {
     var midiPlayerFromData: AVMIDIPlayer?
     
     public override init() {
-        #if os(macOS)
-        micPermission = true
-        #endif
         super.init()
         
         var notifyBlock = MyMIDINotifyBlock
@@ -105,68 +102,66 @@ open class GlassMIDIEngine: NSObject {
         }
     }
     
-    var avEngine = AVAudioEngine()
-    var midi: MyMIDIInstrument?
     var teacher: PianoTeacher?
-    public func test() {
-        teacher = PianoTeacher()
-        teacher?.playMidi()
+    public func test() -> [ModelNote] {
+        guard let filepath = Bundle.module.url(forResource: "test3", withExtension: "mid") else {
+            return []
+        }
+//        teacher = PianoTeacher()
+//        teacher?.playMidi()
 //        teacher?.play(scale: .blues, inKey: .Eflat, inOctaves: [2,3,4], withTempo: 150, useStaticTime: true)
+        let midi = MidiData()
+        
+        do {
+            let data: Data = try Data(contentsOf: filepath)
+            midi.load(data: data)
+            
+            var notes: [ModelNote] = []
+            
+            midi.noteTracks.forEach { track in
+                track.notes.forEach {
+                    let length = $0.duration.inSeconds
+                    let start = ($0.timeStamp.inSeconds)
+                    let pitch = $0.note
+                    
+                    notes.append(.init(start: start, length: length, pitch: Int(pitch)))
+                }
+            }
+            
+            return notes
+        }
+        catch let error as NSError {
+            print("\(error.localizedDescription)")
+            return []
+        }
+        
+        return []
     }
     
-    func createAVMIDIPlayer(musicSequence: MusicSequence) {
-            
-            guard let bankURL = Bundle.module.url(forResource: "GeneralUser GS MuseScore v1.442", withExtension: "sf2") else {
-                fatalError("\"GeneralUser GS MuseScore v1.442.sf2\" file not found.")
-            }
-            
-            
-            var status = noErr
-            var data: Unmanaged<CFData>?
-            status = MusicSequenceFileCreateData (musicSequence,
-                                                  MusicSequenceFileTypeID.midiType,
-                                                  MusicSequenceFileFlags.eraseFile,
-                                                  480, &data)
-            
-            if status != noErr {
-                print("bad status \(status)")
-            }
-            
-            if let md = data {
-                let midiData = md.takeUnretainedValue() as Data
-                do {
-                    try self.midiPlayerFromData = AVMIDIPlayer(data: midiData as Data, soundBankURL: bankURL)
-                    print("created midi player with sound bank url \(bankURL)")
-                } catch let error as NSError {
-                    print("nil midi player")
-                    print("Error \(error.localizedDescription)")
-                }
-                data?.release()
-                
-                self.midiPlayerFromData?.prepareToPlay()
-            }
-            
-        }
+//    public func loadMIDI() {
+//        guard let filepath = Bundle.module.url(forResource: "test", withExtension: "mid") else {
+//            return
+//        }
+//        do {
+//            let data: Data = try Data(contentsOf: filepath)
+//            self.sequencer = AVAudioSequencer(audioEngine: engine)
+//
+//            try self.sequencer?.load(from: data, options: [])
+//            self.sequencer?.prepareToPlay()
+//        }
+//        catch let error as NSError {
+//            print("\(error.localizedDescription)")
+//            return
+//        }
+//    }
 }
 
-class MyMIDIInstrument: AVAudioUnitMIDIInstrument {
-    init(soundBankURL: URL) throws {
-        let description = AudioComponentDescription(
-            componentType: kAudioUnitType_MusicDevice, componentSubType: kAudioUnitSubType_MIDISynth, componentManufacturer: kAudioUnitManufacturer_Apple, componentFlags: 0, componentFlagsMask: 0
-        )
-        super.init(audioComponentDescription: description)
-
-        var bankURL = soundBankURL
-
-        let status = AudioUnitSetProperty(
-            self.audioUnit,
-            AudioUnitPropertyID(kMusicDeviceProperty_SoundBankURL),
-            AudioUnitScope(kAudioUnitScope_Global),
-            0,
-            &bankURL,
-            UInt32(MemoryLayout<URL>.size))
-        if (status != OSStatus(noErr)) {
-            throw NSError(domain: "MyMIDIInstrument", code: Int(status), userInfo: [NSLocalizedDescriptionKey: "Could not set soundbank property"])
-        }
+public struct ModelNote: Codable, Identifiable, Hashable, Equatable {
+    public var id: String {
+        String(start + length + Double(pitch))
     }
+    
+    public let start: Double
+    public let length: Double
+    public let pitch: Int
 }

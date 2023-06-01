@@ -47,9 +47,10 @@ open class GlassMicEngine: NSObject {
     private var gTmp0 = -1
     
     public override init() {
-        #if os(macOS)
-        micPermission = true
-        #endif
+        //TODO: mic check for macOS needs to be moved to _v2 variant
+//        #if os(macOS)
+//        micPermission = true
+//        #endif
         super.init()
     }
     
