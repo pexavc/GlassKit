@@ -11,7 +11,7 @@ import AVFoundation
 
 public extension LeVerre {
     func request(engine: EngineType) -> Engine? {
-        if let song = playlist.currentSong.songURL {
+        if let song = self.url {
             engines.remote = Remote.init(withRemoteUrl: song, delegate: nil)
         }
         return engines.remote

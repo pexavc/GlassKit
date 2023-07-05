@@ -47,6 +47,10 @@ public class GlassEngine {
         player.directive = self
     }
     
+    public func load(_ url: URL) {
+        leVerre.load(url)
+    }
+    
     public func stop() {
         leVerre.stop()
         mic.stopRecording()

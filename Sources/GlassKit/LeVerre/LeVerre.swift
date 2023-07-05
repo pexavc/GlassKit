@@ -42,6 +42,8 @@ public class LeVerre {
     //MARK: Helpers
     var currentTime: Float = 0.0
     
+    var url: URL?
+    
     var playlistDuration: Song {
         playlist.songs[playlist.getIndex]
     }
@@ -49,6 +51,10 @@ public class LeVerre {
     func prepare() {
         indexData = index ?? ""
         playlist = Playlist.generate(from: indexData)
+    }
+    
+    func load(_ url: URL) {
+        self.url = url
     }
     
     public var index: String? {

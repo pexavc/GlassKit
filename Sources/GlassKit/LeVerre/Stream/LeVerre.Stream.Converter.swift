@@ -72,6 +72,7 @@ extension LeVerre {
                     let result = AudioConverterNew(sourceFormat, destinationFormat, &strongSelf.converter)
                     
                     guard result == noErr else {
+                        print(result)
                         Log.monitor(ConverterError.unableToCreateConverter(result).errorDescription as Any)
                         return
                     }
